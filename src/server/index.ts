@@ -26,7 +26,7 @@ startWatcher((filePath, content) => {
     console.log("✅ Updated docs for:", filePath);
     console.log(docs);
 
-    const tsFiles = glob.sync("src/**/*.ts");
+    const tsFiles = glob.sync("src/test/**/*.ts");
     let allDocs = "";
     for (const file of tsFiles) {
         const content = fs.readFileSync(file, "utf-8");

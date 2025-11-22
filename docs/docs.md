@@ -1,33 +1,24 @@
-# src\server\watcher.ts
-
-
-## Function: startWatcher
-- Params: `onChange: (filePath: string, content: string`
-
-# src\server\parser.ts
-
-
-## Function: parseAndGenerateDocs
-- Params: `filePath: string, code: string`
-
-# src\server\index.ts
-
-
-# src\server\docs-gen.ts
-
-
-## Function: generateMarkdown
-- Params: `filePath: string, items: any[]`
-
-# src\server\test\example.ts
+# src\test\example.ts
 
 
 ## Function: greet
-- Params: `name: string`
+- Params: name: string
+- Returns: string
+- Description: Greets a user
+
+
 
 ## Function: add
-- Params: `a: number, b: number`
+- Params: a: number, b: number
+- Returns: number
+- Description: Adds two numbers
+
+
 
 ## Function: hello
-- Params: ``
+- Params: None
+- Returns: Void
+- Description: Logs hello world
+
+
 
