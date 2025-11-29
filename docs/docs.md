@@ -36,7 +36,7 @@
 
 
 
-## Function: stringLength
+## Function: stringLengths
 - Params: str: string | null
 - Returns: number
 

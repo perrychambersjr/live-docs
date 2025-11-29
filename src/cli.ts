@@ -4,6 +4,7 @@ import { LiveDocsConfig } from "./core/config.ts";
 import { startWatcher } from "./fs/fileWatcher.ts";
 import { generateAllDocs } from "./index.ts";
 import { parseAndGenerateDocs } from "./parsing/parseTS.ts";
+import { debounce } from "./utils/debounce.ts";
 
 // Helper to parse CLI flags
 function parseCLIArgs() {
@@ -44,11 +45,14 @@ if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
 // Watch mode
 if (watchMode) {
+  // debounce full rebuild to prevent rapid consecutive saves and race conditions
+  const debouncedGenerateAllDocs = debounce(generateAllDocs, 500);
+
   startWatcher(filePattern, (filePath, content) => {
     console.log("File changed:", filePath);
 
     try {
-      const docs = parseAndGenerateDocs(filePath, content);
+      const docs = parseAndGenerateDocs(filePath);
       console.log("Updated docs for file:", filePath);
 
       generateAllDocs();
