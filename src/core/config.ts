@@ -2,7 +2,7 @@ import path from "path";
 
 export const LiveDocsConfig = {
     // Glob pattern to watch source TypeScript files
-    pattern: "src/**/*.ts",
+    pattern: "src/test/**/*.ts",
 
     // Directories/files to ignore (node_modules, .git, dist, etc)
     ignored: ["node_modules", ".git", "dist", "docs"],

@@ -48,7 +48,7 @@ export function generateAllDocs() {
   try {
     ensureOutput();
 
-    const tsFiles = collectFiles(LiveDocsConfig.pattern);;
+    const tsFiles = collectFiles(LiveDocsConfig.pattern);
 
     if (tsFiles.length === 0) {
       console.warn("⚠️ No TypeScript files found to parse.");
@@ -82,7 +82,7 @@ export function startWatchMode() {
   if(LiveDocsConfig.watchMode) {
     console.log("🔍 LiveDocs is now watching for file changes...");
 
-    startWatcher("src/**/*.ts", (filePath, content) => {
+    startWatcher("src/test/**/*.ts", (filePath, content) => {
       console.log("File changed:", filePath); // ✅ filePath is valid here
       console.log("Content length:", content.length); // ✅ content is valid here
 

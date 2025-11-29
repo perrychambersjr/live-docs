@@ -1,27 +1,53 @@
-import type { FunctionItem } from "../types/Types.ts";
 import { cleanComment } from "./cleanComments.ts";
 
-export function parseFunctions(source: string): FunctionItem[] {
-    const items: FunctionItem[] = [];
+export interface FunctionItem {
+  type: "function";
+  name: string;
+  params: string | null;
+  return: string;
+  comment?: string;
+}
 
-    const functionRegex = /\/\*\*([\s\S]*?)\*\/\s*export function (\w+)\s*\(([^)]*)\)\s*:\s*([^{\n]+)/g;
+export function parseFunctions(code: string): FunctionItem[] {
+  const items: FunctionItem[] = [];
 
-    let match;
-    while ((match = functionRegex.exec(source)) !== null) {
-        const rawComment = match[1] ?? "";
-        const comment = rawComment ? cleanComment(rawComment) : undefined;
+    // Matches:
+    // - function foo(...) {}
+    // - export function foo(...) {}
+    // - export default function foo(...) {}
+    // Matches standard, exported, default, and arrow functions
+    const funcRegex = /(?:\/\/.*|\/\*[\s\S]*?\*\/)*\s*(?:export\s+)?(?:default\s+)?function\s+([a-zA-Z0-9_]+)\s*\(([^)]*)\)/g;
+    const arrowRegex = /(?:\/\/.*|\/\*[\s\S]*?\*\/)*\s*export\s+const\s+([a-zA-Z0-9_]+)\s*=\s*\(([^)]*)\)\s*=>/g;
 
-        const functionName = match[2];
-        if (!functionName) continue;
 
-        items.push({
-            type: 'function',
-            name: functionName,
-            params: match[3] || null,
-            return: match[4] || "void",
-            comment,
-        });
-    }
+  let match;
+  while ((match = funcRegex.exec(code)) !== null) {
+    const rawComment = match[0]; // includes preceding comment lines
+    const comment = rawComment ? cleanComment(rawComment) : undefined;
 
-    return items;
+    items.push({
+      type: "function",
+      name: match[1] ?? "unknown",
+      params: match[2] || null,
+      return: match[3] || "void",
+      comment,
+    });
+  }
+
+  // Also match exported arrow functions:
+  while ((match = arrowRegex.exec(code)) !== null) {
+    const rawComment = match[0];
+    const comment = rawComment ? cleanComment(rawComment) : undefined;
+
+    items.push({
+      type: "function",
+      name: match[1] ?? "unknown",
+      params: match[2] || null,
+      return: "void",
+      comment,
+    });
+  }
+
+  console.log(`✅ parseFunctions: found ${items.length} functions`);
+  return items;
 }
