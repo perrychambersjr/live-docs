@@ -1,76 +1,58 @@
+# src\index.ts
+
+
+# src\cli.ts
+
+
+# src\utils\dedent.ts
+
+
+# src\types\Types.ts
+
+
 # src\test\person.ts
-
-
-## Function: greet
-- Params: name: string
-- Returns: string
-- Description: Returns a greeting for the given name
-
-
-
-## Function: add
-- Params: a: number, b: number
-- Returns: number
-- Description: Adds two numbers together
-
-
-
-## Function: hello
-- Params: None
-- Returns: Void
-- Description: Logs "Hello World" to the console
-
-
-
-## Function: isAdult
-- Params: age: number
-- Returns: boolean
-- Description: Checks if a person is an adult based on age
-
-
-
-## Function: getPersonSummary
-- Params: name: string, age: number
-- Returns: string
-- Description: Returns a formatted string with a person's info including name and age
-
-
-
-## Function: stringLength
-- Params: str: string | null
-- Returns: number
-- Description: Returns the length of a string, or 0 if null
-
 
 
 # src\test\example.ts
 
 
-## Function: greet
-- Params: name: string
-- Returns: string
-- Description: Greets a user
+# src\parsing\parseTS.ts
+
+
+# src\parsing\parseFunctions.ts
+
+
+# src\parsing\parseClasses.ts
+
+
+# src\parsing\cleanComments.ts
+
+
+# src\fs\fileWatcher.ts
+
+
+# src\fs\fileCollector.ts
+
+
+## Function: collectFiles
+- Params: pattern: string
+- Returns: string[] 
+- Description: Collects all files matching a glob pattern. This becomes the source of truth for which files to watch + parse.  @param pattern - The glob pattern to match files against. @returns An array of file paths that match the given pattern.
 
 
 
-## Function: add
-- Params: a: number, b: number
-- Returns: number
-- Description: Adds two numbers
+# src\fs\fileCache.ts
 
 
-
-## Function: hello
-- Params: None
-- Returns: Void
-- Description: Logs hello world
+# src\docs\renderFunction.ts
 
 
+# src\docs\renderClass.ts
 
-## Function: foo
-- Params: None
-- Returns: Void
-- Description: foo bar baz
 
+# src\docs\generateMarkdown.ts
+
+
+# src\core\config.ts
 
 

@@ -14,6 +14,6 @@ function hello(): void {
 }
 
 // foo bar baz
-function foo(): void {
+function fooBar(): void {
   console.log('something')
 }

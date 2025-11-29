@@ -1,16 +1,15 @@
-type FunctionItem = {
+export type FunctionItem = {
     type: 'function';
     name: string;
     params: string | null;
     return: string;
-    comment?: string;
+    comment?: string | undefined;
 };
 
-type ClassItem = {
+export type ClassItem = {
     type: 'class';
     name: string;
-    comment?: string;
+    comment?: string | undefined;
 };
 
-export type Item = FunctionItem | ClassItem;
 

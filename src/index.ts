@@ -1,9 +1,10 @@
 import fs from "fs";
 import { glob } from "glob";
 import path from "path";
+import { LiveDocsConfig } from "./core/config.ts";
+import { collectFiles } from "./fs/fileCollector.ts";
 import { startWatcher } from "./fs/fileWatcher.ts";
 import { parseAndGenerateDocs } from "./parsing/parseTS.ts";
-import { LiveDocsConfig } from "./core/config.ts";
 
 /**
  * -------------------------------------------------------------
@@ -16,7 +17,7 @@ import { LiveDocsConfig } from "./core/config.ts";
  */
 const SOURCE_GLOB = LiveDocsConfig.pattern;
 const OUTPUT_DIR = LiveDocsConfig.outputDir;
-const OUTPUT_FILE = LiveDocsConfig.outputFile;
+const OUTPUT_FILE = path.join(LiveDocsConfig.outputDir, LiveDocsConfig.outputFile);
 
 /**
  * Ensures the docs directory + file exist.
@@ -30,6 +31,8 @@ function ensureOutput() {
   if (!fs.existsSync(OUTPUT_FILE)) {
     fs.writeFileSync(OUTPUT_FILE, "# Documentation\n\n");
   }
+  
+  console.log("✅ Docs will be written to:", OUTPUT_FILE);
 }
 
 /**
@@ -42,17 +45,28 @@ function ensureOutput() {
  * Later: this will be used by CLI flag --once
  */
 export function generateAllDocs() {
-  const tsFiles = glob.sync(SOURCE_GLOB);
+  try {
+    ensureOutput();
 
-  let allDocs = "";
+    const tsFiles = collectFiles(LiveDocsConfig.pattern);;
 
-  for (const file of tsFiles) {
-    const content = fs.readFileSync(file, "utf-8");
-    allDocs += parseAndGenerateDocs(file, content) + "\n";
+    if (tsFiles.length === 0) {
+      console.warn("⚠️ No TypeScript files found to parse.");
+      return;
+    }
+
+    let allDocs = "";
+
+    for (const file of tsFiles) {
+      const content = fs.readFileSync(file, "utf-8");
+      allDocs += parseAndGenerateDocs(file, content) + "\n";
+    }
+
+    fs.writeFileSync(OUTPUT_FILE, allDocs, "utf-8");
+    console.log(`✨ Rebuilt full documentation at ${OUTPUT_FILE}`);
+  } catch (err) {
+    console.error("❌ Failed to generate documentation:", err);
   }
-
-  fs.writeFileSync(OUTPUT_FILE, allDocs, "utf-8");
-  console.log("✨ Rebuilt full documentation.");
 }
 
 /**
