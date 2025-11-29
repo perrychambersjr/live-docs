@@ -7,9 +7,9 @@
     "live-docs": "dist/cli.ts"
   },
   "scripts": {
-  "build": "tsc",
-  "dev": "ts-node src/cli.ts",
-  "start": "node dist/index.ts"
+    "build": "tsc",
+    "dev": "ts-node src/cli.ts",
+    "start": "node dist/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +19,7 @@
     "chokidar": "^4.0.3",
     "express": "^5.1.0",
     "glob": "^13.0.0",
+    "ts-morph": "^27.0.2",
     "ws": "^8.18.3"
   },
   "devDependencies": {

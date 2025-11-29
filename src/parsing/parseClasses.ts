@@ -1,29 +1,20 @@
+import { SourceFile } from "ts-morph";
+import type { ClassItem } from "../types/Types.ts";
 import { cleanComment } from "./cleanComments.ts";
+import { getJsDocCommentText } from "./getJsDocCommentText.ts";
 
-export interface ClassItem {
-  type: "class";
-  name: string;
-  comment?: string;
-}
-
-export function parseClasses(code: string): ClassItem[] {
+export function parseClasses(sourceFile: SourceFile): ClassItem[] {
   const items: ClassItem[] = [];
 
-  // Matches top-level classes with optional export
-  const classRegex = /(?:\/\/.*|\/\*[\s\S]*?\*\/)*\s*(?:export\s+)?class\s+([a-zA-Z0-9_]+)/g;
-
-  let match;
-  while ((match = classRegex.exec(code)) !== null) {
-    const rawComment = match[0];
-    const comment = rawComment ? cleanComment(rawComment) : undefined;
+  sourceFile.getClasses().forEach(cls => {
+    const comment = cls.getJsDocs().map(getJsDocCommentText).map(cleanComment).join("\n") || undefined;
 
     items.push({
       type: "class",
-      name: match[1] ?? "unknown",
-      comment,
+      name: cls.getName() ?? "unknown",
+      comment
     });
-  }
+  });
 
-  console.log(`✅ parseClasses: found ${items.length} classes`);
   return items;
 }

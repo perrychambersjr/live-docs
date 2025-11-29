@@ -25,6 +25,6 @@ function getPersonSummary(name: string, age: number): string {
 }
 
 // Returns the length of a string, or 0 if null
-function stringLengths(str: string | null): number {
+function stringLength(str: string | null): number {
   return str?.length ?? 0;
 }

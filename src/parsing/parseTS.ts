@@ -1,19 +1,26 @@
+import { Project, SyntaxKind } from "ts-morph";
 import { generateMarkdown } from "../docs/generateMarkdown.ts";
-import type { ClassItem } from "./parseClasses.ts";
+import type { ClassItem, FunctionItem } from "../types/Types.ts";
 import { parseClasses } from "./parseClasses.ts";
-import type { FunctionItem } from "./parseFunctions.ts";
 import { parseFunctions } from "./parseFunctions.ts";
 
 export type Item = FunctionItem | ClassItem;
 
-export function parseAndGenerateDocs(filePath: string, code: string): string {
-  const funcs = parseFunctions(code);
-  const classes = parseClasses(code);
+export function parseAndGenerateDocs(filePath: string): string {
+  const project = new Project();
+  const sourceFile = project.addSourceFileAtPath(filePath);
 
-  const items: Item[] = [...funcs, ...classes];
+  // parse functions using AST-based parseFunctions
+  const functionItems = parseFunctions(sourceFile);
 
-  console.log(`📝 parseAndGenerateDocs: total items found in ${filePath}: ${items.length}`);
-  items.forEach(i => console.log(" -", i.type, i.name));
+  // parse classes using AST-based parseClasses
+  const classItems = parseClasses(sourceFile);
 
-  return generateMarkdown(filePath, items);
+  const allItems: Item[] = [...functionItems, ...classItems];
+
+  console.log(
+    `✅ parseAndGenerateDocs: total items found in ${filePath}: ${allItems.length}`,
+  );
+
+  return generateMarkdown(filePath, allItems);
 }

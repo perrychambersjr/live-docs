@@ -59,7 +59,7 @@ export function generateAllDocs() {
 
     for (const file of tsFiles) {
       const content = fs.readFileSync(file, "utf-8");
-      allDocs += parseAndGenerateDocs(file, content) + "\n";
+      allDocs += parseAndGenerateDocs(file) + "\n";
     }
 
     fs.writeFileSync(OUTPUT_FILE, allDocs, "utf-8");
@@ -87,7 +87,7 @@ export function startWatchMode() {
       console.log("Content length:", content.length); // ✅ content is valid here
 
       try {
-        const docs = parseAndGenerateDocs(filePath, content);
+        const docs = parseAndGenerateDocs(filePath);
         console.log("✅ Parsed docs for file:", filePath);
         console.log(docs);
 

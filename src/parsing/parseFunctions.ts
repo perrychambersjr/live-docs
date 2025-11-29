@@ -1,53 +1,40 @@
+import { SourceFile, SyntaxKind } from "ts-morph";
+import type { FunctionItem } from "../types/Types.ts";
 import { cleanComment } from "./cleanComments.ts";
+import { getJsDocCommentText } from "./getJsDocCommentText.ts";
 
-export interface FunctionItem {
-  type: "function";
-  name: string;
-  params: string | null;
-  return: string;
-  comment?: string;
-}
+export function parseFunctions(sourceFile: SourceFile): FunctionItem[] {
+    const functionItems: FunctionItem[] = [];
 
-export function parseFunctions(code: string): FunctionItem[] {
-  const items: FunctionItem[] = [];
-
-    // Matches:
-    // - function foo(...) {}
-    // - export function foo(...) {}
-    // - export default function foo(...) {}
-    // Matches standard, exported, default, and arrow functions
-    const funcRegex = /(?:\/\/.*|\/\*[\s\S]*?\*\/)*\s*(?:export\s+)?(?:default\s+)?function\s+([a-zA-Z0-9_]+)\s*\(([^)]*)\)/g;
-    const arrowRegex = /(?:\/\/.*|\/\*[\s\S]*?\*\/)*\s*export\s+const\s+([a-zA-Z0-9_]+)\s*=\s*\(([^)]*)\)\s*=>/g;
-
-
-  let match;
-  while ((match = funcRegex.exec(code)) !== null) {
-    const rawComment = match[0]; // includes preceding comment lines
-    const comment = rawComment ? cleanComment(rawComment) : undefined;
-
-    items.push({
-      type: "function",
-      name: match[1] ?? "unknown",
-      params: match[2] || null,
-      return: match[3] || "void",
-      comment,
+    // Normal and exported functions
+    sourceFile.getFunctions().forEach((func) => {
+        functionItems.push({
+            type: "function",
+            name: func.getName() || "anonymous",
+            params: func.getParameters().map(param => param.getText()).join(", ") || "None",
+            return: func.getReturnType().getText() || "void",
+            comment: cleanComment(func.getJsDocs().map(doc => doc.getComment()).join("\n")),
+        });
     });
-  }
 
-  // Also match exported arrow functions:
-  while ((match = arrowRegex.exec(code)) !== null) {
-    const rawComment = match[0];
-    const comment = rawComment ? cleanComment(rawComment) : undefined;
+    // Arrow functions assigned to variables (including exported)
+    sourceFile.getVariableDeclarations().forEach(v => {
+        const initializer = v.getInitializer();
 
-    items.push({
-      type: "function",
-      name: match[1] ?? "unknown",
-      params: match[2] || null,
-      return: "void",
-      comment,
+        if (initializer?.getKind() === SyntaxKind.ArrowFunction) {
+        // getJsDocs exists on the arrow function itself, not the variable declaration
+        const arrowFunc = initializer.asKind(SyntaxKind.ArrowFunction);
+        if (arrowFunc) {
+            functionItems.push({
+            type: "function",
+            name: v.getName(),
+            params: arrowFunc.getParameters().map(p => p.getText()).join(", ") || null,
+            return: arrowFunc.getReturnType().getText(),
+            comment: arrowFunc.getJsDocs().map(getJsDocCommentText).map(cleanComment).join("\n") || undefined
+            });
+        }
+        }
     });
-  }
 
-  console.log(`✅ parseFunctions: found ${items.length} functions`);
-  return items;
+    return functionItems;
 }
