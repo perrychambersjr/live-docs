@@ -1,4 +1,4 @@
-import { generateMarkdown } from './docs-gen.ts';
+import { generateMarkdown } from '../docs/docGenerator.ts';
 
 export function parseAndGenerateDocs(filePath: string, code: string) {
   const items: any[] = [];

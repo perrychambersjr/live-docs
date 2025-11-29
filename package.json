@@ -2,10 +2,14 @@
   "name": "live-docs",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.ts",
+  "bin": {
+    "live-docs": "dist/cli.ts"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx watch src/server/index.ts"
+  "build": "tsc",
+  "dev": "ts-node src/cli.ts",
+  "start": "node dist/index.ts"
   },
   "keywords": [],
   "author": "",

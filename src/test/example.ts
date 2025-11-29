@@ -12,3 +12,8 @@ function add(a: number, b: number): number {
 function hello(): void {
   console.log("Hello World");
 }
+
+// foo bar baz
+function foo(): void {
+  console.log('something')
+}
