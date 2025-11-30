@@ -1,6 +1,7 @@
 import type { ClassItem, FunctionItem } from '../types/Types.ts';
 import { renderClass } from './renderClass.ts';
 import { renderFunction } from './renderFunction.ts';
+import { formatJsDoc } from './formatJsDoc.ts';
 
 export function generateMarkdown(filePath: string, items: (FunctionItem | ClassItem)[]): string {
     let md = `# ${filePath}\n\n`;
@@ -19,5 +20,4 @@ export function generateMarkdown(filePath: string, items: (FunctionItem | ClassI
     }
 
     return md;
-
 }

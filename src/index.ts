@@ -82,7 +82,7 @@ export function startWatchMode() {
   if(LiveDocsConfig.watchMode) {
     console.log("🔍 LiveDocs is now watching for file changes...");
 
-    startWatcher("src/test/**/*.ts", (filePath, content) => {
+    startWatcher("src/**/*.ts", (filePath, content) => {
       console.log("File changed:", filePath); // ✅ filePath is valid here
       console.log("Content length:", content.length); // ✅ content is valid here
 
